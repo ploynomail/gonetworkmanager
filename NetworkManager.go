@@ -301,7 +301,7 @@ func (nm *networkManager) AddAndActivateConnection(connection map[string]map[str
 	var opath1 dbus.ObjectPath
 	var opath2 dbus.ObjectPath
 
-	err = nm.callWithReturn2(&opath1, &opath2, NetworkManagerAddAndActivateConnection, connection, d.GetPath())
+	err = nm.callWithReturn2(&opath1, &opath2, NetworkManagerAddAndActivateConnection, connection, d.GetPath(), dbus.ObjectPath("/"))
 	if err != nil {
 		return
 	}
