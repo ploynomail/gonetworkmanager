@@ -224,7 +224,7 @@ type networkManager struct {
 }
 
 func (nm *networkManager) Reload(flags uint32) error {
-	return nm.call(NetworkManagerReload)
+	return nm.call(NetworkManagerReload, flags)
 }
 
 func (nm *networkManager) GetDevices() (devices []Device, err error) {
