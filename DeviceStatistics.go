@@ -21,6 +21,8 @@ type DeviceStatistics interface {
 	// Refresh rate of the rest of properties of this interface. The properties are guaranteed to be refreshed each RefreshRateMs milliseconds in case the underlying counter has changed too. If zero, there is no guaranteed refresh rate of the properties.
 	GetPropertyRefreshRateMs() (uint32, error)
 
+	SetPropertyRefreshRateMs(uint32) (error)
+
 	// Number of transmitted bytes
 	GetPropertyTxBytes() (uint64, error)
 
@@ -43,6 +45,10 @@ func (d *deviceStatistics) GetPath() dbus.ObjectPath {
 
 func (d *deviceStatistics) GetPropertyRefreshRateMs() (uint32, error) {
 	return d.getUint32Property(DeviceStatisticsPropertyRefreshRateMs)
+}
+
+func (d *deviceStatistics) SetPropertyRefreshRateMs(rate uint32) (error) {
+	return d.setProperty(DeviceStatisticsPropertyRefreshRateMs, rate)
 }
 
 func (d *deviceStatistics) GetPropertyTxBytes() (uint64, error) {
