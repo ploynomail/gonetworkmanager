@@ -367,12 +367,26 @@ func (nm *networkManager) State() (state NmState, err error) {
 }
 
 func (nm *networkManager) CheckpointCreate(devices []Device, rollbackTimeout uint32, flags []NmCheckpointCreateFlags) (cp Checkpoint, err error) {
-	intFlags := 0
+	var intFlags uint32 = 0
 	for _, flag := range flags {
-		intFlags |= int(flag)
+		intFlags |= uint32(flag)
 	}
 
-	err = nm.callWithReturn(&cp, NetworkManagerCheckpointCreate, rollbackTimeout, intFlags)
+	var devicePaths []dbus.ObjectPath
+	if len(devices) > 0 {
+		devicePaths := []dbus.ObjectPath{}
+		for _, device := range devices {
+			devicePaths = append(devicePaths, device.GetPath())
+		}
+	}
+
+	var checkpointPath dbus.ObjectPath
+	err = nm.callWithReturn(&checkpointPath, NetworkManagerCheckpointCreate, devicePaths, rollbackTimeout, intFlags)
+	if err != nil {
+		return
+	}
+
+	cp, err = NewCheckpoint(checkpointPath)
 	return
 }
 
@@ -425,7 +439,7 @@ func (nm *networkManager) GetPropertyAllDevices() ([]Device, error) {
 }
 
 func (nm *networkManager) GetPropertyCheckpoints() ([]Checkpoint, error) {
-	checkpointsPaths, err := nm.getSliceObjectProperty(NetworkManagerPropertyAllDevices)
+	checkpointsPaths, err := nm.getSliceObjectProperty(NetworkManagerPropertyCheckpoints)
 	if err != nil {
 		return nil, err
 	}
