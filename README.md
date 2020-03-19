@@ -5,7 +5,8 @@ Go D-Bus bindings for NetworkManager 1.16.
 
 Tested with NetworkManager 1.16.0.
 
-[![GoDoc](https://godoc.org/github.com/Wifx/gonetworkmanager?status.svg)](https://godoc.org/github.com/Wifx/gonetworkmanager)
+[![GoDoc](https://godoc.org/github.com/Wifx/gonetworkmanager?status.svg)](https://pkg.go.dev/github.com/Wifx/gonetworkmanager)
+![Go build](https://github.com/Wifx/gonetworkmanager/workflows/Go/badge.svg)
 
 [NetworkManager 1.16 D-Bus Spec](https://developer.gnome.org/NetworkManager/1.16/spec.html)
 
