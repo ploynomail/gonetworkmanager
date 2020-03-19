@@ -124,7 +124,7 @@ type Device interface {
 
 	// Whether or not this device is managed by NetworkManager. Setting this property has a similar effect to configuring the device as unmanaged via the keyfile.unmanaged-devices setting in NetworkManager.conf. Changes to this value are not persistent and lost after NetworkManager restart.
 	GetPropertyManaged() (bool, error)
-	SetPropertyManaged(bool)
+	SetPropertyManaged(bool) error
 
 	// If TRUE, indicates the device is allowed to autoconnect. If FALSE, manual intervention is required before the device will automatically connect to a known network, such as activating a connection using the device, or setting this property to TRUE. This property cannot be set to TRUE for default-unmanaged devices, since they never autoconnect.
 	GetPropertyAutoConnect() (bool, error)
