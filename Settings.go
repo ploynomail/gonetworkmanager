@@ -10,7 +10,7 @@ const (
 
 	/* Methods */
 	SettingsListConnections      = SettingsInterface + ".ListConnections"
-	SettingsGetConnectionByUuid  = SettingsInterface + ".GetConnectionByUuid"
+	SettingsGetConnectionByUUID  = SettingsInterface + ".GetConnectionByUuid"
 	SettingsAddConnection        = SettingsInterface + ".AddConnection"
 	SettingsAddConnectionUnsaved = SettingsInterface + ".AddConnectionUnsaved"
 	SettingsLoadConnections      = SettingsInterface + ".LoadConnections"
@@ -26,6 +26,9 @@ const (
 type Settings interface {
 	// ListConnections gets list the saved network connections known to NetworkManager
 	ListConnections() ([]Connection, error)
+
+	// GetConnectionByUUID gets the connection, given that connection's UUID.
+	GetConnectionByUUID(uuid string) (Connection, error)
 
 	// AddConnection adds new connection and save it to disk.
 	AddConnection(settings ConnectionSettings) (Connection, error)
@@ -70,6 +73,17 @@ func (s *settings) ListConnections() ([]Connection, error) {
 	}
 
 	return connections, nil
+}
+
+// GetConnectionByUUID gets the connection, given that connection's UUID.
+func (s *settings) GetConnectionByUUID(uuid string) (Connection, error) {
+	var path dbus.ObjectPath
+	err := s.callWithReturn(&path, SettingsGetConnectionByUUID, uuid)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewConnection(path)
 }
 
 func (s *settings) AddConnection(settings ConnectionSettings) (Connection, error) {
