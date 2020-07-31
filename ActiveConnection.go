@@ -1,6 +1,7 @@
 package gonetworkmanager
 
 import (
+	"fmt"
 	"github.com/godbus/dbus/v5"
 )
 
@@ -24,6 +25,10 @@ const (
 	ActiveConnectionPropertyDhcp6Config    = ActiveConnectionInterface + ".Dhcp6Config"    // readable   o
 	ActiveConnectionPropertyVpn            = ActiveConnectionInterface + ".Vpn"            // readable   b
 	ActiveConnectionPropertyMaster         = ActiveConnectionInterface + ".Master"         // readable   o
+
+	/* Signals */
+	ActiveConnectionSignalStateChanged = "StateChanged" // u state, u reason
+
 )
 
 type ActiveConnection interface {
@@ -76,6 +81,8 @@ type ActiveConnection interface {
 
 	// GetMaster gets the master device of the connection.
 	GetPropertyMaster() (Device, error)
+
+	SubscribeState(receiver chan StateChange, exit chan struct{}) (err error)
 }
 
 func NewActiveConnection(objectPath dbus.ObjectPath) (ActiveConnection, error) {
@@ -210,4 +217,56 @@ func (a *activeConnection) GetPropertyMaster() (Device, error) {
 		return nil, err
 	}
 	return DeviceFactory(path)
+}
+
+type StateChange struct {
+	State  NmActiveConnectionState
+	Reason NmActiveConnectionStateReason
+}
+
+func (a *activeConnection) SubscribeState(receiver chan StateChange, exit chan struct{}) (err error) {
+
+	channel := make(chan *dbus.Signal, 1)
+
+	a.conn.Signal(channel)
+
+	err = a.conn.AddMatchSignal(
+		dbus.WithMatchInterface(ActiveConnectionInterface),
+		dbus.WithMatchMember(ActiveConnectionSignalStateChanged),
+		dbus.WithMatchObjectPath(a.GetPath()),
+	)
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		for {
+			select {
+			case signal, ok := <-channel:
+
+				if !ok {
+					err = fmt.Errorf("connection closed for %s", ActiveConnectionSignalStateChanged)
+					return
+				}
+
+				if signal.Path != a.GetPath() || signal.Name != ActiveConnectionInterface+"."+ActiveConnectionSignalStateChanged {
+					continue
+				}
+
+				stateChange := StateChange{
+					State:  NmActiveConnectionState(signal.Body[0].(uint32)),
+					Reason: NmActiveConnectionStateReason(signal.Body[1].(uint32)),
+				}
+
+				receiver <- stateChange
+
+			case <-exit:
+				a.conn.RemoveSignal(channel)
+				close(channel)
+				return
+			}
+		}
+	}()
+
+	return
 }

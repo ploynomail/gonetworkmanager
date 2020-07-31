@@ -169,3 +169,112 @@ const (
 	Nm80211ModeInfra   Nm80211Mode = 2
 	Nm80211ModeAp      Nm80211Mode = 3
 )
+
+//go:generate stringer -type=NmActiveConnectionState
+type NmVpnConnectionState uint32
+
+const (
+	NmVpnConnectionUnknown      = 0 //The state of the VPN connection is unknown.
+	NmVpnConnectionPrepare      = 1 //The VPN connection is preparing to connect.
+	NmVpnConnectionNeedAuth     = 2 //The VPN connection needs authorization credentials.
+	NmVpnConnectionConnect      = 3 //The VPN connection is being established.
+	NmVpnConnectionIpConfigGet  = 4 //The VPN connection is getting an IP address.
+	NmVpnConnectionActivated    = 5 //The VPN connection is active.
+	NmVpnConnectionFailed       = 6 //The VPN connection failed.
+	NmVpnConnectionDisconnected = 7 //The VPN connection is disconnected.
+)
+
+//go:generate stringer -type=NmDeviceStateReason
+type NmDeviceStateReason uint32
+
+const (
+	NmDeviceStateReasonNone                        = 0  // No reason given
+	NmDeviceStateReasonUnknown                     = 1  // Unknown error
+	NmDeviceStateReasonNowManaged                  = 2  // Device is now managed
+	NmDeviceStateReasonNowUnmanaged                = 3  // Device is now unmanaged
+	NmDeviceStateReasonConfigFailed                = 4  // The device could not be readied for configuration
+	NmDeviceStateReasonIpConfigUnavailable         = 5  // IP configuration could not be reserved (no available address, timeout, etc)
+	NmDeviceStateReasonIpConfigExpired             = 6  // The IP config is no longer valid
+	NmDeviceStateReasonNoSecrets                   = 7  // Secrets were required, but not provided
+	NmDeviceStateReasonSupplicantDisconnect        = 8  // 802.1x supplicant disconnected
+	NmDeviceStateReasonSupplicantConfigFailed      = 9  // 802.1x supplicant configuration failed
+	NmDeviceStateReasonSupplicantFailed            = 10 // 802.1x supplicant failed
+	NmDeviceStateReasonSupplicantTimeout           = 11 // 802.1x supplicant took too long to authenticate
+	NmDeviceStateReasonPppStartFailed              = 12 // PPP service failed to start
+	NmDeviceStateReasonPppDisconnect               = 13 // PPP service disconnected
+	NmDeviceStateReasonPppFailed                   = 14 // PPP failed
+	NmDeviceStateReasonDhcpStartFailed             = 15 // DHCP client failed to start
+	NmDeviceStateReasonDhcpError                   = 16 // DHCP client error
+	NmDeviceStateReasonDhcpFailed                  = 17 // DHCP client failed
+	NmDeviceStateReasonSharedStartFailed           = 18 // Shared connection service failed to start
+	NmDeviceStateReasonSharedFailed                = 19 // Shared connection service failed
+	NmDeviceStateReasonAutoipStartFailed           = 20 // AutoIP service failed to start
+	NmDeviceStateReasonAutoipError                 = 21 // AutoIP service error
+	NmDeviceStateReasonAutoipFailed                = 22 // AutoIP service failed
+	NmDeviceStateReasonModemBusy                   = 23 // The line is busy
+	NmDeviceStateReasonModemNoDialTone             = 24 // No dial tone
+	NmDeviceStateReasonModemNoCarrier              = 25 // No carrier could be established
+	NmDeviceStateReasonModemDialTimeout            = 26 // The dialing request timed out
+	NmDeviceStateReasonModemDialFailed             = 27 // The dialing attempt failed
+	NmDeviceStateReasonModemInitFailed             = 28 // Modem initialization failed
+	NmDeviceStateReasonGsmApnFailed                = 29 // Failed to select the specified APN
+	NmDeviceStateReasonGsmRegistrationNotSearching = 30 // Not searching for networks
+	NmDeviceStateReasonGsmRegistrationDenied       = 31 // Network registration denied
+	NmDeviceStateReasonGsmRegistrationTimeout      = 32 // Network registration timed out
+	NmDeviceStateReasonGsmRegistrationFailed       = 33 // Failed to register with the requested network
+	NmDeviceStateReasonGsmPinCheckFailed           = 34 // PIN check failed
+	NmDeviceStateReasonFirmwareMissing             = 35 // Necessary firmware for the device may be missing
+	NmDeviceStateReasonRemoved                     = 36 // The device was removed
+	NmDeviceStateReasonSleeping                    = 37 // NetworkManager went to sleep
+	NmDeviceStateReasonConnectionRemoved           = 38 // The device's active connection disappeared
+	NmDeviceStateReasonUserRequested               = 39 // Device disconnected by user or client
+	NmDeviceStateReasonCarrier                     = 40 // Carrier/link changed
+	NmDeviceStateReasonConnectionAssumed           = 41 // The device's existing connection was assumed
+	NmDeviceStateReasonSupplicantAvailable         = 42 // The supplicant is now available
+	NmDeviceStateReasonModemNotFound               = 43 // The modem could not be found
+	NmDeviceStateReasonBtFailed                    = 44 // The Bluetooth connection failed or timed out
+	NmDeviceStateReasonGsmSimNotInserted           = 45 // GSM Modem's SIM Card not inserted
+	NmDeviceStateReasonGsmSimPinRequired           = 46 // GSM Modem's SIM Pin required
+	NmDeviceStateReasonGsmSimPukRequired           = 47 // GSM Modem's SIM Puk required
+	NmDeviceStateReasonGsmSimWrong                 = 48 // GSM Modem's SIM wrong
+	NmDeviceStateReasonInfinibandMode              = 49 // InfiniBand device does not support connected mode
+	NmDeviceStateReasonDependencyFailed            = 50 // A dependency of the connection failed
+	NmDeviceStateReasonBr2684Failed                = 51 // Problem with the RFC 2684 Ethernet over ADSL bridge
+	NmDeviceStateReasonModemManagerUnavailable     = 52 // ModemManager not running
+	NmDeviceStateReasonSsidNotFound                = 53 // The Wi-Fi network could not be found
+	NmDeviceStateReasonSecondaryConnectionFailed   = 54 // A secondary connection of the base connection failed
+	NmDeviceStateReasonDcbFcoeFailed               = 55 // DCB or FCoE setup failed
+	NmDeviceStateReasonTeamdControlFailed          = 56 // teamd control failed
+	NmDeviceStateReasonModemFailed                 = 57 // Modem failed or no longer available
+	NmDeviceStateReasonModemAvailable              = 58 // Modem now ready and available
+	NmDeviceStateReasonSimPinIncorrect             = 59 // SIM PIN was incorrect
+	NmDeviceStateReasonNewActivation               = 60 // New connection activation was enqueued
+	NmDeviceStateReasonParentChanged               = 61 // the device's parent changed
+	NmDeviceStateReasonParentManagedChanged        = 62 // the device parent's management changed
+	NmDeviceStateReasonOvsdbFailed                 = 63 // problem communicating with Open vSwitch database
+	NmDeviceStateReasonIpAddressDuplicate          = 64 // a duplicate IP address was detected
+	NmDeviceStateReasonIpMethodUnsupported         = 65 // The selected IP method is not supported
+	NmDeviceStateReasonSriovConfigurationFailed    = 66 // configuration of SR-IOV parameters failed
+	NmDeviceStateReasonPeerNotFound                = 67 // The Wi-Fi P2P peer could not be found
+)
+
+//go:generate stringer -type=NmActiveConnectionStateReason
+type NmActiveConnectionStateReason uint32
+
+const (
+	NmActiveConnectionStateReasonUnknown             = 0  // The reason for the active connection state change is unknown.
+	NmActiveConnectionStateReasonNone                = 1  // No reason was given for the active connection state change.
+	NmActiveConnectionStateReasonUserDisconnected    = 2  // The active connection changed state because the user disconnected it.
+	NmActiveConnectionStateReasonDeviceDisconnected  = 3  // The active connection changed state because the device it was using was disconnected.
+	NmActiveConnectionStateReasonServiceStopped      = 4  // The service providing the VPN connection was stopped.
+	NmActiveConnectionStateReasonIpConfigInvalid     = 5  // The IP config of the active connection was invalid.
+	NmActiveConnectionStateReasonConnectTimeout      = 6  // The connection attempt to the VPN service timed out.
+	NmActiveConnectionStateReasonServiceStartTimeout = 7  // A timeout occurred while starting the service providing the VPN connection.
+	NmActiveConnectionStateReasonServiceStartFailed  = 8  // Starting the service providing the VPN connection failed.
+	NmActiveConnectionStateReasonNoSecrets           = 9  // Necessary secrets for the connection were not provided.
+	NmActiveConnectionStateReasonLoginFailed         = 10 // Authentication to the server failed.
+	NmActiveConnectionStateReasonConnectionRemoved   = 11 // The connection was deleted from settings.
+	NmActiveConnectionStateReasonDependencyFailed    = 12 // Master connection of this connection failed to activate.
+	NmActiveConnectionStateReasonDeviceRealizeFailed = 13 // Could not create the software device link.
+	NmActiveConnectionStateReasonDeviceRemoved       = 14 // The device this connection depended on disappeared.
+)
