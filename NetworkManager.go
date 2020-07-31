@@ -77,7 +77,7 @@ type NetworkManager interface {
 	GetDeviceByIpIface(interfaceId string) (Device, error)
 
 	// Activate a connection using the supplied device.
-	ActivateConnection(connection Connection, device Device) (ActiveConnection, error)
+	ActivateConnection(connection Connection, device Device, s *dbus.Object) (ActiveConnection, error)
 
 	// Adds a new connection using the given details (if any) as a template (automatically filling in missing settings with the capabilities of the given device), then activate the new connection. Cannot be used for VPN connections at this time.
 	AddAndActivateConnection(connection map[string]map[string]interface{}, device Device) (ActiveConnection, error)
@@ -282,9 +282,24 @@ func (nm *networkManager) GetDeviceByIpIface(interfaceId string) (device Device,
 	return
 }
 
-func (nm *networkManager) ActivateConnection(c Connection, d Device) (ac ActiveConnection, err error) {
+func (nm *networkManager) ActivateConnection(c Connection, d Device, s *dbus.Object) (ac ActiveConnection, err error) {
 	var opath dbus.ObjectPath
-	err = nm.callWithReturn(&opath, NetworkManagerActivateConnection, c.GetPath(), d.GetPath(), dbus.ObjectPath("/"))
+
+	var devicePath dbus.ObjectPath
+	if d != nil {
+		devicePath = d.GetPath()
+	} else {
+		devicePath = "/"
+	}
+
+	var specificObjectPath dbus.ObjectPath
+	if s != nil {
+		specificObjectPath = s.Path()
+	} else {
+		specificObjectPath = "/"
+	}
+
+	err = nm.callWithReturn(&opath, NetworkManagerActivateConnection, c.GetPath(), devicePath, specificObjectPath)
 	if err != nil {
 		return
 	}
@@ -301,7 +316,12 @@ func (nm *networkManager) AddAndActivateConnection(connection map[string]map[str
 	var opath1 dbus.ObjectPath
 	var opath2 dbus.ObjectPath
 
-	err = nm.callWithReturn2(&opath1, &opath2, NetworkManagerAddAndActivateConnection, connection, d.GetPath(), dbus.ObjectPath("/"))
+	var devicePath dbus.ObjectPath
+	if d != nil {
+		devicePath = d.GetPath()
+	}
+
+	err = nm.callWithReturn2(&opath1, &opath2, NetworkManagerAddAndActivateConnection, connection, devicePath, dbus.ObjectPath("/"))
 	if err != nil {
 		return
 	}
