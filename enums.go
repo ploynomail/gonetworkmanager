@@ -278,3 +278,13 @@ const (
 	NmActiveConnectionStateReasonDeviceRealizeFailed = 13 // Could not create the software device link.
 	NmActiveConnectionStateReasonDeviceRemoved       = 14 // The device this connection depended on disappeared.
 )
+
+//go:generate stringer -type=NmRollbackResult
+type NmRollbackResult uint32
+
+const (
+	NmRollbackResultOk                 = 0 // the rollback succeeded.
+	NmRollbackResultErrNoDevice        = 1 // the device no longer exists.
+	NmRollbackResultErrDeviceUnmanaged = 2 // the device is now unmanaged.
+	NmRollbackResultErrFailed          = 3 // other errors during rollback.
+)

@@ -77,7 +77,7 @@ type NetworkManager interface {
 	GetDeviceByIpIface(interfaceId string) (Device, error)
 
 	// Activate a connection using the supplied device.
-	ActivateConnection(connection Connection, device Device, s *dbus.Object) (ActiveConnection, error)
+	ActivateConnection(connection Connection, device Device, specificObject *dbus.Object) (ActiveConnection, error)
 
 	// Adds a new connection using the given details (if any) as a template (automatically filling in missing settings with the capabilities of the given device), then activate the new connection. Cannot be used for VPN connections at this time.
 	AddAndActivateConnection(connection map[string]map[string]interface{}, device Device) (ActiveConnection, error)
@@ -119,11 +119,16 @@ type NetworkManager interface {
 	// rollbackTimeout: The time in seconds until NetworkManager will automatically rollback to the checkpoint. Set to zero for infinite.
 	// flags: Flags for the creation.
 	// returns: On success, the new checkpoint.
-	CheckpointCreate(devices []Device, rollbackTimeout uint32, flags []NmCheckpointCreateFlags) (Checkpoint, error)
+	CheckpointCreate(devices []Device, rollbackTimeout uint32, flags uint32) (Checkpoint, error)
 
 	// Destroy a previously created checkpoint.
 	// checkpoint: The checkpoint to be destroyed. Set to empty to cancel all pending checkpoints.
 	CheckpointDestroy(checkpoint Checkpoint) error
+
+	// Rollback a checkpoint before the timeout is reached.
+	// checkpoint: The checkpoint to be rolled back.
+	// result: On return, a dictionary of devices and results. Devices are represented by their original D-Bus path; each result is a RollbackResult.
+	CheckpointRollback(checkpoint Checkpoint) (result map[dbus.ObjectPath]NmRollbackResult, err error)
 
 	// Reset the timeout for rollback for the checkpoint.
 	// Since: 1.12
@@ -282,29 +287,29 @@ func (nm *networkManager) GetDeviceByIpIface(interfaceId string) (device Device,
 	return
 }
 
-func (nm *networkManager) ActivateConnection(c Connection, d Device, s *dbus.Object) (ac ActiveConnection, err error) {
-	var opath dbus.ObjectPath
+func (nm *networkManager) ActivateConnection(connection Connection, device Device, specificObject *dbus.Object) (ac ActiveConnection, err error) {
+	var connectionPath dbus.ObjectPath
 
 	var devicePath dbus.ObjectPath
-	if d != nil {
-		devicePath = d.GetPath()
+	if device != nil {
+		devicePath = device.GetPath()
 	} else {
 		devicePath = "/"
 	}
 
 	var specificObjectPath dbus.ObjectPath
-	if s != nil {
-		specificObjectPath = s.Path()
+	if specificObject != nil {
+		specificObjectPath = specificObject.Path()
 	} else {
 		specificObjectPath = "/"
 	}
 
-	err = nm.callWithReturn(&opath, NetworkManagerActivateConnection, c.GetPath(), devicePath, specificObjectPath)
+	err = nm.callWithReturn(&connectionPath, NetworkManagerActivateConnection, connection.GetPath(), devicePath, specificObjectPath)
 	if err != nil {
 		return
 	}
 
-	ac, err = NewActiveConnection(opath)
+	ac, err = NewActiveConnection(connectionPath)
 	if err != nil {
 		return
 	}
@@ -386,22 +391,18 @@ func (nm *networkManager) State() (state NmState, err error) {
 	return
 }
 
-func (nm *networkManager) CheckpointCreate(devices []Device, rollbackTimeout uint32, flags []NmCheckpointCreateFlags) (cp Checkpoint, err error) {
-	var intFlags uint32 = 0
-	for _, flag := range flags {
-		intFlags |= uint32(flag)
-	}
+func (nm *networkManager) CheckpointCreate(devices []Device, rollbackTimeout uint32, flags uint32) (cp Checkpoint, err error) {
 
 	var devicePaths []dbus.ObjectPath
 	if len(devices) > 0 {
-		devicePaths := []dbus.ObjectPath{}
+		var devicePaths []dbus.ObjectPath
 		for _, device := range devices {
 			devicePaths = append(devicePaths, device.GetPath())
 		}
 	}
 
 	var checkpointPath dbus.ObjectPath
-	err = nm.callWithReturn(&checkpointPath, NetworkManagerCheckpointCreate, devicePaths, rollbackTimeout, intFlags)
+	err = nm.callWithReturn(&checkpointPath, NetworkManagerCheckpointCreate, devicePaths, rollbackTimeout, flags)
 	if err != nil {
 		return
 	}
@@ -416,6 +417,23 @@ func (nm *networkManager) CheckpointDestroy(checkpoint Checkpoint) error {
 	} else {
 		return nm.call(NetworkManagerCheckpointDestroy, checkpoint.GetPath())
 	}
+}
+
+func (nm *networkManager) CheckpointRollback(checkpoint Checkpoint) (results map[dbus.ObjectPath]NmRollbackResult, err error) {
+
+	var ret map[dbus.ObjectPath]NmRollbackResult
+
+	err = nm.callWithReturn(&ret, NetworkManagerCheckpointRollback, checkpoint.GetPath())
+	if err != nil {
+		return
+	}
+
+	results = map[dbus.ObjectPath]NmRollbackResult{}
+	for devicePath, result := range ret {
+		results[devicePath] = result
+	}
+
+	return
 }
 
 func (nm *networkManager) CheckpointAdjustRollbackTimeout(checkpoint Checkpoint, addTimeout uint32) error {
