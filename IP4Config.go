@@ -222,6 +222,9 @@ func (c *ip4Config) GetPropertyRouteData() ([]IP4RouteData, error) {
 				}
 				route.Metric = uint8(metric)
 			default:
+				if route.AdditionalAttributes == nil {
+					route.AdditionalAttributes = make(map[string]string)
+				}
 				route.AdditionalAttributes[routeDataAttributeName] = routeDataAttribute.String()
 			}
 		}
