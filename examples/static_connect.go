@@ -45,12 +45,11 @@ const (
 	desiredIP6Method = "ignore"
 )
 
-func printVersion() {
+func printVersion() error {
 	/* Create new instance of gonetworkmanager */
 	nm, err := gonetworkmanager.NewNetworkManager()
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return err
 	}
 
 	// Don't really need the network manager object per se
@@ -58,24 +57,24 @@ func printVersion() {
 	var nmVersion string
 	nmVersion, err = nm.GetPropertyVersion()
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return err
 	}
 
 	fmt.Println("Network Manager Version: " + nmVersion)
+	return nil
 }
 
-func checkForExistingConnection() error {
+func checkForExistingConnection() (bool, error) {
 	// See if our connection already exists
-	everactiveSettings, err := gonetworkmanager.NewSettings()
+	settings, err := gonetworkmanager.NewSettings()
 
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	currentConnections, err := everactiveSettings.ListConnections()
+	currentConnections, err := settings.ListConnections()
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	for _, v := range currentConnections {
@@ -86,10 +85,10 @@ func checkForExistingConnection() error {
 		}
 		currentConnectionSection := connectionSettings[connectionSection]
 		if currentConnectionSection[connectionSectionID] == connectionID {
-			return fmt.Errorf("connection already exists")
+			return true, nil
 		}
 	}
-	return nil
+	return false, nil
 }
 
 func createNewConnection() error {
@@ -102,8 +101,7 @@ func createNewConnection() error {
 	connection[connectionSection][connectionSectionType] = ethernetType
 	connectionUUID, err := uuid.NewUUID()
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return err
 	}
 	connection[connectionSection][connectionSectionUUID] = connectionUUID.String()
 	connection[connectionSection][connectionSectionIfaceName] = interfaceName
@@ -135,13 +133,13 @@ func createNewConnection() error {
 	connection[ip6Section] = make(map[string]interface{})
 	connection[ip6Section][ip6SectionMethod] = desiredIP6Method
 
-	everactiveSettings, err := gonetworkmanager.NewSettings()
+	settings, err := gonetworkmanager.NewSettings()
 
 	if err != nil {
 		return err
 	}
 
-	_, err = everactiveSettings.AddConnection(connection)
+	_, err = settings.AddConnection(connection)
 
 	if err != nil {
 		return err
@@ -152,13 +150,23 @@ func createNewConnection() error {
 func main() {
 
 	// show the version
-	printVersion()
+	if printVersion() != nil {
+		fmt.Println("failed to find version.  Is NetworkManager running?")
+		os.Exit(1)
+	}
 
 	// See if our connection already exists
-	err := checkForExistingConnection()
+	doesExist, err := checkForExistingConnection()
 
+	// if an error then we are done.
 	if err != nil {
 		fmt.Println(err.Error())
+		os.Exit(0)
+	}
+
+	// if the connection already exists we are done.
+	if doesExist == true {
+		fmt.Println("connection already exists, nothing to do.")
 		os.Exit(0)
 	}
 
