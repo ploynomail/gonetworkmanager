@@ -129,7 +129,7 @@ func (c *ip6Config) GetPropertyRouteData() ([]IP6RouteData, error) {
 		return routes, err
 	}
 
-	for _, routeData := range routesData {
+	for index, routeData := range routesData {
 
 		route := IP6RouteData{}
 
@@ -160,11 +160,14 @@ func (c *ip6Config) GetPropertyRouteData() ([]IP6RouteData, error) {
 				}
 				route.Metric = uint8(metric)
 			default:
+				if route.AdditionalAttributes == nil {
+					route.AdditionalAttributes = make(map[string]string)
+				}
 				route.AdditionalAttributes[routeDataAttributeName] = routeDataAttribute.String()
 			}
 		}
-
-		routes = append(routes, route)
+		
+		routes[index] = route
 	}
 	return routes, nil
 }
