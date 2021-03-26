@@ -151,6 +151,7 @@ type NetworkManager interface {
 
 	// Indicates if wireless is currently enabled or not.
 	GetPropertyWirelessEnabled() (bool, error)
+	SetPropertyWirelessEnabled(bool) error
 
 	// Indicates if the wireless hardware is currently enabled, i.e. the state of the RF kill switch.
 	GetPropertyWirelessHardwareEnabled() (bool, error)
@@ -499,6 +500,10 @@ func (nm *networkManager) GetPropertyNetworkingEnabled() (bool, error) {
 
 func (nm *networkManager) GetPropertyWirelessEnabled() (bool, error) {
 	return nm.getBoolProperty(NetworkManagerPropertyWirelessEnabled)
+}
+
+func (nm *networkManager) SetPropertyWirelessEnabled(enabled bool) error {
+	return nm.setProperty(NetworkManagerPropertyWirelessEnabled, enabled)
 }
 
 func (nm *networkManager) GetPropertyWirelessHardwareEnabled() (bool, error) {
