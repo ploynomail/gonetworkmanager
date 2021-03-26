@@ -27,6 +27,9 @@ type Settings interface {
 	// ListConnections gets list the saved network connections known to NetworkManager
 	ListConnections() ([]Connection, error)
 
+	// ReloadConnections tells NetworkManager to reload all connection files from disk, including noticing any added or deleted connection files.
+	ReloadConnections() error
+
 	// GetConnectionByUUID gets the connection, given that connection's UUID.
 	GetConnectionByUUID(uuid string) (Connection, error)
 
@@ -73,6 +76,12 @@ func (s *settings) ListConnections() ([]Connection, error) {
 	}
 
 	return connections, nil
+}
+
+// ReloadConnections tells NetworkManager to reload (and apply) configuration files
+// from disk taking notice of any added or removed connections.
+func (s *settings) ReloadConnections() error {
+	return s.call(SettingsReloadConnections)
 }
 
 // GetConnectionByUUID gets the connection, given that connection's UUID.
