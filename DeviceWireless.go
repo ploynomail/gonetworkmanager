@@ -186,7 +186,6 @@ func (d *deviceWireless) MarshalJSON() ([]byte, error) {
 	m["PermHwAddress"], _ = d.GetPropertyPermHwAddress()
 	m["Mode"], _ = d.GetPropertyMode()
 	m["Bitrate"], _ = d.GetPropertyBitrate()
-	m["AccessPoints"], _ = d.GetPropertyAccessPoints()
 	m["ActiveAccessPoint"], _ = d.GetPropertyActiveAccessPoint()
 	m["WirelessCapabilities"], _ = d.GetPropertyWirelessCapabilities()
 	m["LastScan"], _ = d.GetPropertyLastScan()
