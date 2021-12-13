@@ -23,4 +23,4 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Build
-      run: go build -v examples/devices.go
+      run: go build -v examples/devices/devices.go
