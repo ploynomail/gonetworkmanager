@@ -2,6 +2,7 @@ package gonetworkmanager
 
 import (
 	"fmt"
+
 	"github.com/godbus/dbus/v5"
 )
 
@@ -220,6 +221,7 @@ func (a *activeConnection) GetPropertyMaster() (Device, error) {
 }
 
 type StateChange struct {
+	Path   dbus.ObjectPath
 	State  NmActiveConnectionState
 	Reason NmActiveConnectionStateReason
 }
@@ -243,17 +245,17 @@ func (a *activeConnection) SubscribeState(receiver chan StateChange, exit chan s
 		for {
 			select {
 			case signal, ok := <-channel:
-
 				if !ok {
 					err = fmt.Errorf("connection closed for %s", ActiveConnectionSignalStateChanged)
 					return
 				}
 
-				if signal.Path != a.GetPath() || signal.Name != ActiveConnectionInterface+"."+ActiveConnectionSignalStateChanged {
+				if signal.Name != ActiveConnectionInterface+"."+ActiveConnectionSignalStateChanged {
 					continue
 				}
 
 				stateChange := StateChange{
+					Path:   signal.Path,
 					State:  NmActiveConnectionState(signal.Body[0].(uint32)),
 					Reason: NmActiveConnectionStateReason(signal.Body[1].(uint32)),
 				}
