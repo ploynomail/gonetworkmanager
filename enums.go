@@ -158,6 +158,9 @@ const (
 	Nm80211APSecGroupCCMP    Nm80211APSec = 0x80
 	Nm80211APSecKeyMgmtPSK   Nm80211APSec = 0x100
 	Nm80211APSecKeyMgmt8021X Nm80211APSec = 0x200
+	Nm80211APSecKeyMgmtSAE   Nm80211APSec = 0x400
+	Nm80211APSecKeyMgmtOWE   Nm80211APSec = 0x800
+	Nm80211APSecKeyMgmtOWETM Nm80211APSec = 0x1000
 )
 
 //go:generate stringer -type=Nm80211Mode
