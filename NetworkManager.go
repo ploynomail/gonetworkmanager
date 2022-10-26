@@ -396,7 +396,6 @@ func (nm *networkManager) CheckpointCreate(devices []Device, rollbackTimeout uin
 
 	var devicePaths []dbus.ObjectPath
 	if len(devices) > 0 {
-		var devicePaths []dbus.ObjectPath
 		for _, device := range devices {
 			devicePaths = append(devicePaths, device.GetPath())
 		}
