@@ -16,7 +16,7 @@ const (
 type DHCP4Options map[string]interface{}
 
 type DHCP4Config interface {
-	// GetOptions gets options map of configuration returned by the IPv4 DHCP server.
+	// GetPropertyOptions GetOptions gets options map of configuration returned by the IPv4 DHCP server.
 	GetPropertyOptions() (DHCP4Options, error)
 
 	MarshalJSON() ([]byte, error)

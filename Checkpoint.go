@@ -18,13 +18,13 @@ const (
 type Checkpoint interface {
 	GetPath() dbus.ObjectPath
 
-	// Array of object paths for devices which are part of this checkpoint.
+	// GetPropertyDevices Array of object paths for devices which are part of this checkpoint.
 	GetPropertyDevices() ([]Device, error)
 
-	// The timestamp (in CLOCK_BOOTTIME milliseconds) of checkpoint creation.
+	// GetPropertyCreated The timestamp (in CLOCK_BOOTTIME milliseconds) of checkpoint creation.
 	GetPropertyCreated() (int64, error)
 
-	// Timeout in seconds for automatic rollback, or zero.
+	// GetPropertyRollbackTimeout Timeout in seconds for automatic rollback, or zero.
 	GetPropertyRollbackTimeout() (uint32, error)
 
 	MarshalJSON() ([]byte, error)

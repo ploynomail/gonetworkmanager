@@ -59,43 +59,43 @@ type IP4NameserverData struct {
 }
 
 type IP4Config interface {
-	// Array of arrays of IPv4 address/prefix/gateway. All 3 elements of each array are in network byte order. Essentially: [(addr, prefix, gateway), (addr, prefix, gateway), ...]
+	// GetPropertyAddresses Array of arrays of IPv4 address/prefix/gateway. All 3 elements of each array are in network byte order. Essentially: [(addr, prefix, gateway), (addr, prefix, gateway), ...]
 	// Deprecated: use AddressData and Gateway
 	GetPropertyAddresses() ([]IP4Address, error)
 
-	// Array of IP address data objects. All addresses will include "address" (an IP address string), and "prefix" (a uint). Some addresses may include additional attributes.
+	// GetPropertyAddressData Array of IP address data objects. All addresses will include "address" (an IP address string), and "prefix" (a uint). Some addresses may include additional attributes.
 	GetPropertyAddressData() ([]IP4AddressData, error)
 
-	// The gateway in use.
+	// GetPropertyGateway The gateway in use.
 	GetPropertyGateway() (string, error)
 
-	// Arrays of IPv4 route/prefix/next-hop/metric. All 4 elements of each tuple are in network byte order. 'route' and 'next hop' are IPv4 addresses, while prefix and metric are simple unsigned integers. Essentially: [(route, prefix, next-hop, metric), (route, prefix, next-hop, metric), ...]
+	// GetPropertyRoutes Arrays of IPv4 route/prefix/next-hop/metric. All 4 elements of each tuple are in network byte order. 'route' and 'next hop' are IPv4 addresses, while prefix and metric are simple unsigned integers. Essentially: [(route, prefix, next-hop, metric), (route, prefix, next-hop, metric), ...]
 	// Deprecated: use RouteData
 	GetPropertyRoutes() ([]IP4Route, error)
 
-	// Array of IP route data objects. All routes will include "dest" (an IP address string) and "prefix" (a uint). Some routes may include "next-hop" (an IP address string), "metric" (a uint), and additional attributes.
+	// GetPropertyRouteData Array of IP route data objects. All routes will include "dest" (an IP address string) and "prefix" (a uint). Some routes may include "next-hop" (an IP address string), "metric" (a uint), and additional attributes.
 	GetPropertyRouteData() ([]IP4RouteData, error)
 
-	// The nameservers in use.
+	// GetPropertyNameservers The nameservers in use.
 	// Deprecated: use NameserverData
 	GetPropertyNameservers() ([]string, error)
 
-	// The nameservers in use. Currently only the value "address" is recognized (with an IP address string).
+	// GetPropertyNameserverData The nameservers in use. Currently only the value "address" is recognized (with an IP address string).
 	GetPropertyNameserverData() ([]IP4NameserverData, error)
 
-	// A list of domains this address belongs to.
+	// GetPropertyDomains A list of domains this address belongs to.
 	GetPropertyDomains() ([]string, error)
 
-	// A list of dns searches.
+	// GetPropertySearches A list of dns searches.
 	GetPropertySearches() ([]string, error)
 
-	// A list of DNS options that modify the behavior of the DNS resolver. See resolv.conf(5) manual page for the list of supported options.
+	// GetPropertyDnsOptions A list of DNS options that modify the behavior of the DNS resolver. See resolv.conf(5) manual page for the list of supported options.
 	GetPropertyDnsOptions() ([]string, error)
 
-	// The relative priority of DNS servers.
+	// GetPropertyDnsPriority The relative priority of DNS servers.
 	GetPropertyDnsPriority() (uint32, error)
 
-	// The Windows Internet Name Service servers associated with the connection.
+	// GetPropertyWinsServerData The Windows Internet Name Service servers associated with the connection.
 	GetPropertyWinsServerData() ([]string, error)
 
 	MarshalJSON() ([]byte, error)

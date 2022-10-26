@@ -36,16 +36,16 @@ type Settings interface {
 	// AddConnection adds new connection and save it to disk.
 	AddConnection(settings ConnectionSettings) (Connection, error)
 
-	// Add new connection but do not save it to disk immediately. This operation does not start the network connection unless (1) device is idle and able to connect to the network described by the new connection, and (2) the connection is allowed to be started automatically. Use the 'Save' method on the connection to save these changes to disk. Note that unsaved changes will be lost if the connection is reloaded from disk (either automatically on file change or due to an explicit ReloadConnections call).
+	// AddConnectionUnsaved Add new connection but do not save it to disk immediately. This operation does not start the network connection unless (1) device is idle and able to connect to the network described by the new connection, and (2) the connection is allowed to be started automatically. Use the 'Save' method on the connection to save these changes to disk. Note that unsaved changes will be lost if the connection is reloaded from disk (either automatically on file change or due to an explicit ReloadConnections call).
 	AddConnectionUnsaved(settings ConnectionSettings) (Connection, error)
 
-	// Save the hostname to persistent configuration.
+	// SaveHostname Save the hostname to persistent configuration.
 	SaveHostname(hostname string) error
 
-	// If true, adding and modifying connections is supported.
+	// GetPropertyCanModify If true, adding and modifying connections is supported.
 	GetPropertyCanModify() (bool, error)
 
-	// The machine hostname stored in persistent configuration.
+	// GetPropertyHostname The machine hostname stored in persistent configuration.
 	GetPropertyHostname() (string, error)
 }
 

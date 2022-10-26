@@ -29,40 +29,40 @@ const (
 type DeviceIpTunnel interface {
 	Device
 
-	// The tunneling mode
+	// GetPropertyMode The tunneling mode
 	GetPropertyMode() (uint32, error)
 
-	// The object path of the parent device.
+	// GetPropertyParent The object path of the parent device.
 	GetPropertyParent() (Device, error)
 
-	// The local endpoint of the tunnel.
+	// GetPropertyLocal The local endpoint of the tunnel.
 	GetPropertyLocal() (string, error)
 
-	// The remote endpoint of the tunnel.
+	// GetPropertyRemote The remote endpoint of the tunnel.
 	GetPropertyRemote() (string, error)
 
-	// The TTL assigned to tunneled packets. 0 is a special value meaning that packets inherit the TTL value
+	// GetPropertyTtl The TTL assigned to tunneled packets. 0 is a special value meaning that packets inherit the TTL value
 	GetPropertyTtl() (uint8, error)
 
-	// The type of service (IPv4) or traffic class (IPv6) assigned to tunneled packets.
+	// GetPropertyTos The type of service (IPv4) or traffic class (IPv6) assigned to tunneled packets.
 	GetPropertyTos() (uint8, error)
 
-	// Whether path MTU discovery is enabled on this tunnel.
+	// GetPropertyPathMtuDiscovery Whether path MTU discovery is enabled on this tunnel.
 	GetPropertyPathMtuDiscovery() (bool, error)
 
-	// The key used for incoming packets.
+	// GetPropertyInputKey The key used for incoming packets.
 	GetPropertyInputKey() (string, error)
 
-	// The key used for outgoing packets.
+	// GetPropertyOutputKey The key used for outgoing packets.
 	GetPropertyOutputKey() (string, error)
 
-	// How many additional levels of encapsulation are permitted to be prepended to packets. This property applies only to IPv6 tunnels.
+	// GetPropertyEncapsulationLimit How many additional levels of encapsulation are permitted to be prepended to packets. This property applies only to IPv6 tunnels.
 	GetPropertyEncapsulationLimit() (uint8, error)
 
-	// The flow label to assign to tunnel packets. This property applies only to IPv6 tunnels.
+	// GetPropertyFlowLabel The flow label to assign to tunnel packets. This property applies only to IPv6 tunnels.
 	GetPropertyFlowLabel() (uint32, error)
 
-	// Tunnel flags.
+	// GetPropertyFlags Tunnel flags.
 	GetPropertyFlags() (uint32, error)
 }
 

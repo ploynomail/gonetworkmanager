@@ -35,52 +35,52 @@ const (
 type ActiveConnection interface {
 	GetPath() dbus.ObjectPath
 
-	// GetConnectionSettings gets connection object of the connection.
+	// GetPropertyConnection gets connection object of the connection.
 	GetPropertyConnection() (Connection, error)
 
-	// GetSpecificObject gets a specific object associated with the active connection.
+	// GetPropertySpecificObject gets a specific object associated with the active connection.
 	GetPropertySpecificObject() (AccessPoint, error)
 
-	// GetID gets the ID of the connection.
+	// GetPropertyID gets the ID of the connection.
 	GetPropertyID() (string, error)
 
-	// GetUUID gets the UUID of the connection.
+	// GetPropertyUUID gets the UUID of the connection.
 	GetPropertyUUID() (string, error)
 
-	// GetType gets the type of the connection.
+	// GetPropertyType gets the type of the connection.
 	GetPropertyType() (string, error)
 
-	// GetDevices gets array of device objects which are part of this active connection.
+	// GetPropertyDevices gets array of device objects which are part of this active connection.
 	GetPropertyDevices() ([]Device, error)
 
-	// GetState gets the state of the connection.
+	// GetPropertyState gets the state of the connection.
 	GetPropertyState() (NmActiveConnectionState, error)
 
-	// GetStateFlags gets the state flags of the connection.
+	// GetPropertyStateFlags gets the state flags of the connection.
 	GetPropertyStateFlags() (uint32, error)
 
-	// GetDefault gets the default IPv4 flag of the connection.
+	// GetPropertyDefault gets the default IPv4 flag of the connection.
 	GetPropertyDefault() (bool, error)
 
-	// GetIP4Config gets the IP4Config of the connection.
+	// GetPropertyIP4Config gets the IP4Config of the connection.
 	GetPropertyIP4Config() (IP4Config, error)
 
-	// GetDHCP4Config gets the DHCP6Config of the connection.
+	// GetPropertyDHCP4Config gets the DHCP6Config of the connection.
 	GetPropertyDHCP4Config() (DHCP4Config, error)
 
-	// GetDefault gets the default IPv6 flag of the connection.
+	// GetPropertyDefault6 gets the default IPv6 flag of the connection.
 	GetPropertyDefault6() (bool, error)
 
-	// GetIP6Config gets the IP6Config of the connection.
+	// GetPropertyIP6Config gets the IP6Config of the connection.
 	GetPropertyIP6Config() (IP6Config, error)
 
-	// GetDHCP6Config gets the DHCP4Config of the connection.
+	// GetPropertyDHCP6Config gets the DHCP4Config of the connection.
 	GetPropertyDHCP6Config() (DHCP6Config, error)
 
-	// GetVPN gets the VPN flag of the connection.
+	// GetPropertyVPN gets the VPN flag of the connection.
 	GetPropertyVPN() (bool, error)
 
-	// GetMaster gets the master device of the connection.
+	// GetPropertyMaster gets the master device of the connection.
 	GetPropertyMaster() (Device, error)
 
 	SubscribeState(receiver chan StateChange, exit chan struct{}) (err error)

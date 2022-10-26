@@ -34,7 +34,7 @@ type Connection interface {
 	// Update the connection with new settings and properties (replacing all previous settings and properties) and save the connection to disk. Secrets may be part of the update request, and will be either stored in persistent storage or sent to a Secret Agent for storage, depending on the flags associated with each secret.
 	Update(settings ConnectionSettings) error
 
-	// Update the connection with new settings and properties (replacing all previous settings and properties) but do not immediately save the connection to disk. Secrets may be part of the update request and may sent to a Secret Agent for storage, depending on the flags associated with each secret. Use the 'Save' method to save these changes to disk. Note that unsaved changes will be lost if the connection is reloaded from disk (either automatically on file change or due to an explicit ReloadConnections call).
+	// UpdateUnsaved Update the connection with new settings and properties (replacing all previous settings and properties) but do not immediately save the connection to disk. Secrets may be part of the update request and may sent to a Secret Agent for storage, depending on the flags associated with each secret. Use the 'Save' method to save these changes to disk. Note that unsaved changes will be lost if the connection is reloaded from disk (either automatically on file change or due to an explicit ReloadConnections call).
 	UpdateUnsaved(settings ConnectionSettings) error
 
 	// Delete the connection.
@@ -46,25 +46,25 @@ type Connection interface {
 	// separately using the GetSecrets() method.
 	GetSettings() (ConnectionSettings, error)
 
-	// Get the secrets belonging to this network configuration. Only secrets from
+	// GetSecrets Get the secrets belonging to this network configuration. Only secrets from
 	// persistent storage or a Secret Agent running in the requestor's session
 	// will be returned. The user will never be prompted for secrets as a result
 	// of this request.
 	GetSecrets(settingName string) (ConnectionSettings, error)
 
-	// Clear the secrets belonging to this network connection profile.
+	// ClearSecrets Clear the secrets belonging to this network connection profile.
 	ClearSecrets() error
 
-	// Saves a "dirty" connection (that had previously been updated with UpdateUnsaved) to persistent storage.
+	// Save a "dirty" connection (that had previously been updated with UpdateUnsaved) to persistent storage.
 	Save() error
 
-	// If set, indicates that the in-memory state of the connection does not match the on-disk state. This flag will be set when UpdateUnsaved() is called or when any connection details change, and cleared when the connection is saved to disk via Save() or from internal operations.
+	// GetPropertyUnsaved If set, indicates that the in-memory state of the connection does not match the on-disk state. This flag will be set when UpdateUnsaved() is called or when any connection details change, and cleared when the connection is saved to disk via Save() or from internal operations.
 	GetPropertyUnsaved() (bool, error)
 
-	// Additional flags of the connection profile.
+	// GetPropertyFlags Additional flags of the connection profile.
 	GetPropertyFlags() (uint32, error)
 
-	// File that stores the connection in case the connection is file-backed.
+	// GetPropertyFilename File that stores the connection in case the connection is file-backed.
 	GetPropertyFilename() (string, error)
 
 	MarshalJSON() ([]byte, error)

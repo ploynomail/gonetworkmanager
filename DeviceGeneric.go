@@ -17,10 +17,10 @@ const (
 type DeviceGeneric interface {
 	Device
 
-	// Active hardware address of the device.
+	// GetPropertyHwAddress Active hardware address of the device.
 	GetPropertyHwAddress() (string, error)
 
-	// A (non-localized) description of the interface type, if known.
+	// GetPropertyTypeDescription A (non-localized) description of the interface type, if known.
 	GetPropertyTypeDescription() (string, error)
 }
 

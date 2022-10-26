@@ -15,10 +15,10 @@ const (
 type VpnConnection interface {
 	GetPath() dbus.ObjectPath
 
-	// The VPN-specific state of the connection.
+	// GetPropertyVpnState The VPN-specific state of the connection.
 	GetPropertyVpnState() (NmVpnConnectionState, error)
 
-	// The banner string of the VPN connection.
+	// GetPropertyBanner The banner string of the VPN connection.
 	GetPropertyBanner() (string, error)
 }
 

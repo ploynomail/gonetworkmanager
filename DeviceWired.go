@@ -20,19 +20,19 @@ const (
 type DeviceWired interface {
 	Device
 
-	// Active hardware address of the device.
+	// GetPropertyHwAddress Active hardware address of the device.
 	GetPropertyHwAddress() (string, error)
 
-	// Permanent hardware address of the device.
+	// GetPropertyPermHwAddress Permanent hardware address of the device.
 	GetPropertyPermHwAddress() (string, error)
 
-	// Design speed of the device, in megabits/second (Mb/s).
+	// GetPropertySpeed Design speed of the device, in megabits/second (Mb/s).
 	GetPropertySpeed() (uint32, error)
 
-	// Array of S/390 subchannels for S/390 or z/Architecture devices.
+	// GetPropertyS390Subchannels Array of S/390 subchannels for S/390 or z/Architecture devices.
 	GetPropertyS390Subchannels() ([]string, error)
 
-	// Indicates whether the physical carrier is found (e.g. whether a cable is plugged in or not).
+	// GetPropertyCarrier Indicates whether the physical carrier is found (e.g. whether a cable is plugged in or not).
 	GetPropertyCarrier() (bool, error)
 }
 

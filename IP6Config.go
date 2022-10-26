@@ -53,28 +53,28 @@ type IP6RouteData struct {
 
 type IP6Config interface {
 
-	// Array of IP address data objects. All addresses will include "address" (an IP address string), and "prefix" (a uint). Some addresses may include additional attributes.
+	// GetPropertyAddressData Array of IP address data objects. All addresses will include "address" (an IP address string), and "prefix" (a uint). Some addresses may include additional attributes.
 	GetPropertyAddressData() ([]IP6AddressData, error)
 
-	// The gateway in use.
+	// GetPropertyGateway The gateway in use.
 	GetPropertyGateway() (string, error)
 
-	// Array of IP route data objects. All routes will include "dest" (an IP address string) and "prefix" (a uint). Some routes may include "next-hop" (an IP address string), "metric" (a uint), and additional attributes.
+	// GetPropertyRouteData Array of IP route data objects. All routes will include "dest" (an IP address string) and "prefix" (a uint). Some routes may include "next-hop" (an IP address string), "metric" (a uint), and additional attributes.
 	GetPropertyRouteData() ([]IP6RouteData, error)
 
-	// GetNameservers gets the nameservers in use.
+	// GetPropertyNameservers GetNameservers gets the nameservers in use.
 	GetPropertyNameservers() ([][]byte, error)
 
-	// A list of domains this address belongs to.
+	// GetPropertyDomains A list of domains this address belongs to.
 	GetPropertyDomains() ([]string, error)
 
-	// A list of dns searches.
+	// GetPropertySearches A list of dns searches.
 	GetPropertySearches() ([]string, error)
 
-	// A list of DNS options that modify the behavior of the DNS resolver. See resolv.conf(5) manual page for the list of supported options.
+	// GetPropertyDnsOptions A list of DNS options that modify the behavior of the DNS resolver. See resolv.conf(5) manual page for the list of supported options.
 	GetPropertyDnsOptions() ([]string, error)
 
-	// The relative priority of DNS servers.
+	// GetPropertyDnsPriority The relative priority of DNS servers.
 	GetPropertyDnsPriority() (uint32, error)
 
 	MarshalJSON() ([]byte, error)
@@ -166,7 +166,7 @@ func (c *ip6Config) GetPropertyRouteData() ([]IP6RouteData, error) {
 				route.AdditionalAttributes[routeDataAttributeName] = routeDataAttribute.String()
 			}
 		}
-		
+
 		routes[index] = route
 	}
 	return routes, nil

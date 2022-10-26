@@ -25,40 +25,36 @@ const (
 type AccessPoint interface {
 	GetPath() dbus.ObjectPath
 
-	// GetFlags gets flags describing the capabilities of the access point.
+	// GetPropertyFlags gets flags describing the capabilities of the access point.
 	GetPropertyFlags() (uint32, error)
 
-	// GetWPAFlags gets flags describing the access point's capabilities
-	// according to WPA (Wifi Protected Access).
+	// GetPropertyWPAFlags gets flags describing the access point's capabilities
+	// according to WPA (Wi-Fi Protected Access).
 	GetPropertyWPAFlags() (uint32, error)
 
-	// GetRSNFlags gets flags describing the access point's capabilities
+	// GetPropertyRSNFlags gets flags describing the access point's capabilities
 	// according to the RSN (Robust Secure Network) protocol.
 	GetPropertyRSNFlags() (uint32, error)
 
-	// GetSSID returns the Service Set Identifier identifying the access point.
+	// GetPropertySSID returns the Service Set Identifier identifying the access point.
 	GetPropertySSID() (string, error)
 
-	// GetFrequency gets the radio channel frequency in use by the access point,
-	// in MHz.
+	// GetPropertyFrequency gets the radio channel frequency in use by the access point, in MHz.
 	GetPropertyFrequency() (uint32, error)
 
-	// GetHWAddress gets the hardware address (BSSID) of the access point.
+	// GetPropertyHWAddress gets the hardware address (BSSID) of the access point.
 	GetPropertyHWAddress() (string, error)
 
-	// GetMode describes the operating mode of the access point.
+	// GetPropertyMode describes the operating mode of the access point.
 	GetPropertyMode() (Nm80211Mode, error)
 
-	// GetMaxBitrate gets the maximum bitrate this access point is capable of, in
-	// kilobits/second (Kb/s).
+	// GetPropertyMaxBitrate gets the maximum bitrate this access point is capable of, in kilobits/second (Kb/s).
 	GetPropertyMaxBitrate() (uint32, error)
 
-	// GetStrength gets the current signal quality of the access point, in
-	// percent.
+	// GetPropertyStrength gets the current signal quality of the access point, in percent.
 	GetPropertyStrength() (uint8, error)
 
-	// GetPropertyLastSeen
-	// The timestamp (in CLOCK_BOOTTIME seconds) for the last  time the access point was found in scan results.
+	// GetPropertyLastSeen The timestamp (in CLOCK_BOOTTIME seconds) for the last  time the access point was found in scan results.
 	// A value of -1 means the access point has never been found in scan results.
 	GetPropertyLastSeen() (int32, error)
 

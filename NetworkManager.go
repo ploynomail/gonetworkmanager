@@ -67,19 +67,19 @@ type NetworkManager interface {
 	// (0x04) means to restart the DNS plugin. This is for example useful when using dnsmasq plugin, which uses additional configuration in /etc/NetworkManager/dnsmasq.d. If you edit those files, you can restart the DNS plugin. This action shortly interrupts name resolution. Note that flags may affect each other. For example, restarting the DNS plugin (0x04) implicitly updates DNS too (0x02). Or when reloading the configuration (0x01), changes to DNS setting also cause a DNS update (0x02). However, (0x01) does not involve restarting the DNS plugin (0x04) or update resolv.conf (0x02), unless the DNS related configuration changes in NetworkManager.conf.
 	Reload(flags uint32) error
 
-	// Get the list of realized network devices.
+	// GetDevices Get the list of realized network devices.
 	GetDevices() ([]Device, error)
 
-	// Get the list of all network devices.
+	// GetAllDevices Get the list of all network devices.
 	GetAllDevices() ([]Device, error)
 
-	// Return the object path of the network device referenced by its IP interface name. Note that some devices (usually modems) only have an IP interface name when they are connected.
+	// GetDeviceByIpIface Return the object path of the network device referenced by its IP interface name. Note that some devices (usually modems) only have an IP interface name when they are connected.
 	GetDeviceByIpIface(interfaceId string) (Device, error)
 
-	// Activate a connection using the supplied device.
+	// ActivateConnection Activate a connection using the supplied device.
 	ActivateConnection(connection Connection, device Device, specificObject *dbus.Object) (ActiveConnection, error)
 
-	// Adds a new connection using the given details (if any) as a template (automatically filling in missing settings with the capabilities of the given device), then activate the new connection. Cannot be used for VPN connections at this time.
+	// AddAndActivateConnection Adds a new connection using the given details (if any) as a template (automatically filling in missing settings with the capabilities of the given device), then activate the new connection. Cannot be used for VPN connections at this time.
 	AddAndActivateConnection(connection map[string]map[string]interface{}, device Device) (ActiveConnection, error)
 
 	// ActivateWirelessConnection requests activating access point to network device
@@ -97,116 +97,116 @@ type NetworkManager interface {
 	// connection["802-11-wireless-security"]["psk"] = password
 	AddAndActivateWirelessConnection(connection map[string]map[string]interface{}, device Device, accessPoint AccessPoint) (ActiveConnection, error)
 
-	// Deactivate an active connection.
+	// DeactivateConnection Deactivate an active connection.
 	DeactivateConnection(connection ActiveConnection) error
 
-	// Control the NetworkManager daemon's sleep state. When asleep, all interfaces that it manages are deactivated. When awake, devices are available to be activated. This command should not be called directly by users or clients; it is intended for system suspend/resume tracking.
+	// Sleep Control the NetworkManager daemon's sleep state. When asleep, all interfaces that it manages are deactivated. When awake, devices are available to be activated. This command should not be called directly by users or clients; it is intended for system suspend/resume tracking.
 	// sleepnWake: Indicates whether the NetworkManager daemon should sleep or wake.
 	Sleep(sleepNWake bool) error
 
-	// Control whether overall networking is enabled or disabled. When disabled, all interfaces that NM manages are deactivated. When enabled, all managed interfaces are re-enabled and available to be activated. This command should be used by clients that provide to users the ability to enable/disable all networking.
+	// Enable Control whether overall networking is enabled or disabled. When disabled, all interfaces that NM manages are deactivated. When enabled, all managed interfaces are re-enabled and available to be activated. This command should be used by clients that provide to users the ability to enable/disable all networking.
 	// enableNDisable: If FALSE, indicates that all networking should be disabled. If TRUE, indicates that NetworkManager should begin managing network devices.
 	Enable(enableNDisable bool) error
 
-	// Re-check the network connectivity state.
+	// CheckConnectivity Re-check the network connectivity state.
 	CheckConnectivity() error
 
-	// The overall networking state as determined by the NetworkManager daemon, based on the state of network devices under its management.
+	// State The overall networking state as determined by the NetworkManager daemon, based on the state of network devices under its management.
 	State() (NmState, error)
 
-	// Create a checkpoint of the current networking configuration for given interfaces. If rollback_timeout is not zero, a rollback is automatically performed after the given timeout.
+	// CheckpointCreate Create a checkpoint of the current networking configuration for given interfaces. If rollback_timeout is not zero, a rollback is automatically performed after the given timeout.
 	// devices: A list of device paths for which a checkpoint should be created. An empty list means all devices.
 	// rollbackTimeout: The time in seconds until NetworkManager will automatically rollback to the checkpoint. Set to zero for infinite.
 	// flags: Flags for the creation.
 	// returns: On success, the new checkpoint.
 	CheckpointCreate(devices []Device, rollbackTimeout uint32, flags uint32) (Checkpoint, error)
 
-	// Destroy a previously created checkpoint.
+	// CheckpointDestroy Destroy a previously created checkpoint.
 	// checkpoint: The checkpoint to be destroyed. Set to empty to cancel all pending checkpoints.
 	CheckpointDestroy(checkpoint Checkpoint) error
 
-	// Rollback a checkpoint before the timeout is reached.
+	// CheckpointRollback Rollback a checkpoint before the timeout is reached.
 	// checkpoint: The checkpoint to be rolled back.
 	// result: On return, a dictionary of devices and results. Devices are represented by their original D-Bus path; each result is a RollbackResult.
 	CheckpointRollback(checkpoint Checkpoint) (result map[dbus.ObjectPath]NmRollbackResult, err error)
 
-	// Reset the timeout for rollback for the checkpoint.
+	// CheckpointAdjustRollbackTimeout Reset the timeout for rollback for the checkpoint.
 	// Since: 1.12
 	// addTimeout: number of seconds from ~now~ in which the timeout will expire. Set to 0 to disable the timeout. Note that the added seconds start counting from now, not "Created" timestamp or the previous expiration time. Note that the "Created" property of the checkpoint will stay unchanged by this call. However, the "RollbackTimeout" will be recalculated to give the approximate new expiration time. The new "RollbackTimeout" property will be approximate up to one second precision, which is the accuracy of the property.
 	CheckpointAdjustRollbackTimeout(checkpoint Checkpoint, addTimeout uint32) error
 
 	/* PROPERTIES */
 
-	// The list of realized network devices. Realized devices are those which have backing resources (eg from the kernel or a management daemon like ModemManager, teamd, etc).
+	// GetPropertyDevices The list of realized network devices. Realized devices are those which have backing resources (eg from the kernel or a management daemon like ModemManager, teamd, etc).
 	GetPropertyDevices() ([]Device, error)
 
-	// The list of both realized and un-realized network devices. Un-realized devices are software devices which do not yet have backing resources, but for which backing resources can be created if the device is activated.
+	// GetPropertyAllDevices The list of both realized and un-realized network devices. Un-realized devices are software devices which do not yet have backing resources, but for which backing resources can be created if the device is activated.
 	GetPropertyAllDevices() ([]Device, error)
 
-	// The list of active checkpoints.
+	// GetPropertyCheckpoints The list of active checkpoints.
 	GetPropertyCheckpoints() ([]Checkpoint, error)
 
-	// Indicates if overall networking is currently enabled or not. See the Enable() method.
+	// GetPropertyNetworkingEnabled Indicates if overall networking is currently enabled or not. See the Enable() method.
 	GetPropertyNetworkingEnabled() (bool, error)
 
-	// Indicates if wireless is currently enabled or not.
+	// GetPropertyWirelessEnabled Indicates if wireless is currently enabled or not.
 	GetPropertyWirelessEnabled() (bool, error)
 	SetPropertyWirelessEnabled(bool) error
 
-	// Indicates if the wireless hardware is currently enabled, i.e. the state of the RF kill switch.
+	// GetPropertyWirelessHardwareEnabled Indicates if the wireless hardware is currently enabled, i.e. the state of the RF kill switch.
 	GetPropertyWirelessHardwareEnabled() (bool, error)
 
-	// Indicates if mobile broadband devices are currently enabled or not.
+	// GetPropertyWwanEnabled Indicates if mobile broadband devices are currently enabled or not.
 	GetPropertyWwanEnabled() (bool, error)
 
-	// Indicates if the mobile broadband hardware is currently enabled, i.e. the state of the RF kill switch.
+	// GetPropertyWwanHardwareEnabled Indicates if the mobile broadband hardware is currently enabled, i.e. the state of the RF kill switch.
 	GetPropertyWwanHardwareEnabled() (bool, error)
 
-	// Indicates if WiMAX devices are currently enabled or not.
+	// GetPropertyWimaxEnabled Indicates if WiMAX devices are currently enabled or not.
 	GetPropertyWimaxEnabled() (bool, error)
 
-	// Indicates if the WiMAX hardware is currently enabled, i.e. the state of the RF kill switch.
+	// GetPropertyWimaxHardwareEnabled Indicates if the WiMAX hardware is currently enabled, i.e. the state of the RF kill switch.
 	GetPropertyWimaxHardwareEnabled() (bool, error)
 
-	// List of active connection object paths.
+	// GetPropertyActiveConnections List of active connection object paths.
 	GetPropertyActiveConnections() ([]ActiveConnection, error)
 
-	// The object path of the "primary" active connection being used to access the network. In particular, if there is no VPN active, or the VPN does not have the default route, then this indicates the connection that has the default route. If there is a VPN active with the default route, then this indicates the connection that contains the route to the VPN endpoint.
+	// GetPropertyPrimaryConnection The object path of the "primary" active connection being used to access the network. In particular, if there is no VPN active, or the VPN does not have the default route, then this indicates the connection that has the default route. If there is a VPN active with the default route, then this indicates the connection that contains the route to the VPN endpoint.
 	GetPropertyPrimaryConnection() (ActiveConnection, error)
 
-	// The connection type of the "primary" active connection being used to access the network. This is the same as the Type property on the object indicated by PrimaryConnection.
+	// GetPropertyPrimaryConnectionType The connection type of the "primary" active connection being used to access the network. This is the same as the Type property on the object indicated by PrimaryConnection.
 	GetPropertyPrimaryConnectionType() (string, error)
 
-	// Indicates whether the connectivity is metered. This is equivalent to the metered property of the device associated with the primary connection.
+	// GetPropertyMetered Indicates whether the connectivity is metered. This is equivalent to the metered property of the device associated with the primary connection.
 	GetPropertyMetered() (NmMetered, error)
 
-	// The object path of an active connection that is currently being activated and which is expected to become the new PrimaryConnection when it finishes activating.
+	// GetPropertyActivatingConnection The object path of an active connection that is currently being activated and which is expected to become the new PrimaryConnection when it finishes activating.
 	GetPropertyActivatingConnection() (ActiveConnection, error)
 
-	// Indicates whether NM is still starting up; this becomes FALSE when NM has finished attempting to activate every connection that it might be able to activate at startup.
+	// GetPropertyStartup Indicates whether NM is still starting up; this becomes FALSE when NM has finished attempting to activate every connection that it might be able to activate at startup.
 	GetPropertyStartup() (bool, error)
 
-	// NetworkManager version.
+	// GetPropertyVersion NetworkManager version.
 	GetPropertyVersion() (string, error)
 
-	// The current set of capabilities. See NMCapability for currently defined capability numbers. The array is guaranteed to be sorted in ascending order without duplicates.
+	// GetPropertyCapabilities The current set of capabilities. See NMCapability for currently defined capability numbers. The array is guaranteed to be sorted in ascending order without duplicates.
 	GetPropertyCapabilities() ([]NmCapability, error)
 
-	// The overall state of the NetworkManager daemon.
+	// GetPropertyState The overall state of the NetworkManager daemon.
 	// This takes state of all active connections and the connectivity state into account to produce a single indicator of the network accessibility status.
 	// The graphical shells may use this property to provide network connection status indication and applications may use this to check if Internet connection is accessible. Shell that is able to cope with captive portals should use the "Connectivity" property to decide whether to present a captive portal authentication dialog.
 	GetPropertyState() (NmState, error)
 
-	// The result of the last connectivity check. The connectivity check is triggered automatically when a default connection becomes available, periodically and by calling a CheckConnectivity() method.
+	// GetPropertyConnectivity The result of the last connectivity check. The connectivity check is triggered automatically when a default connection becomes available, periodically and by calling a CheckConnectivity() method.
 	// This property is in general useful for the graphical shell to determine whether the Internet access is being hijacked by an authentication gateway (a "captive portal"). In such case it would typically present a web browser window to give the user a chance to authenticate and call CheckConnectivity() when the user submits a form or dismisses the window.
 	// To determine the whether the user is able to access the Internet without dealing with captive portals (e.g. to provide a network connection indicator or disable controls that require Internet access), the "State" property is more suitable.
 	GetPropertyConnectivity() (NmConnectivity, error)
 
-	// Indicates whether connectivity checking service has been configured. This may return true even if the service is not currently enabled.
+	// GetPropertyConnectivityCheckAvailable Indicates whether connectivity checking service has been configured. This may return true even if the service is not currently enabled.
 	// This is primarily intended for use in a privacy control panel, as a way to determine whether to show an option to enable/disable the feature.
 	GetPropertyConnectivityCheckAvailable() (bool, error)
 
-	// Indicates whether connectivity checking is enabled. This property can also be written to to disable connectivity checking (as a privacy control panel might want to do).
+	// GetPropertyConnectivityCheckEnabled Indicates whether connectivity checking is enabled. This property can also be written to to disable connectivity checking (as a privacy control panel might want to do).
 	GetPropertyConnectivityCheckEnabled() (bool, error)
 
 	// Dictionary of global DNS settings where the key is one of "searches", "options" and "domains". The values for the "searches" and "options" keys are string arrays describing the list of search domains and resolver options, respectively. The value of the "domains" key is a second-level dictionary, where each key is a domain name, and each key's value is a third-level dictionary with the keys "servers" and "options". "servers" is a string array of DNS servers, "options" is a string array of domain-specific options.

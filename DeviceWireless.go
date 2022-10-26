@@ -38,33 +38,33 @@ type DeviceWireless interface {
 	// device, including hidden ones for which the SSID is not yet known.
 	GetAllAccessPoints() ([]AccessPoint, error)
 
-	// Request the device to scan. To know when the scan is finished, use the
+	// RequestScan Request the device to scan. To know when the scan is finished, use the
 	// "PropertiesChanged" signal from "org.freedesktop.DBus.Properties" to listen
 	// to changes to the "LastScan" property.
 	RequestScan() error
 
-	// The active hardware address of the device.
+	// GetPropertyHwAddress The active hardware address of the device.
 	GetPropertyHwAddress() (string, error)
 
-	// The permanent hardware address of the device.
+	// GetPropertyPermHwAddress The permanent hardware address of the device.
 	GetPropertyPermHwAddress() (string, error)
 
-	// The operating mode of the wireless device.
+	// GetPropertyMode The operating mode of the wireless device.
 	GetPropertyMode() (Nm80211Mode, error)
 
-	// The bit rate currently used by the wireless device, in kilobits/second (Kb/s).
+	// GetPropertyBitrate The bit rate currently used by the wireless device, in kilobits/second (Kb/s).
 	GetPropertyBitrate() (uint32, error)
 
-	// List of object paths of access point visible to this wireless device.
+	// GetPropertyAccessPoints List of object paths of access point visible to this wireless device.
 	GetPropertyAccessPoints() ([]AccessPoint, error)
 
-	// Object path of the access point currently used by the wireless device.
+	// GetPropertyActiveAccessPoint Object path of the access point currently used by the wireless device.
 	GetPropertyActiveAccessPoint() (AccessPoint, error)
 
-	// The capabilities of the wireless device.
+	// GetPropertyWirelessCapabilities The capabilities of the wireless device.
 	GetPropertyWirelessCapabilities() (uint32, error)
 
-	// The timestamp (in CLOCK_BOOTTIME milliseconds) for the last finished
+	// GetPropertyLastScan The timestamp (in CLOCK_BOOTTIME milliseconds) for the last finished
 	// network scan. A value of -1 means the device never scanned for access
 	// points.
 	GetPropertyLastScan() (int64, error)
