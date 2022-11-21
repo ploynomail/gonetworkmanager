@@ -2,7 +2,6 @@ package gonetworkmanager
 
 import (
 	"encoding/json"
-
 	"github.com/godbus/dbus/v5"
 )
 
@@ -97,44 +96,50 @@ func (c *connection) Delete() error {
 
 func (c *connection) GetSettings() (ConnectionSettings, error) {
 	var settings map[string]map[string]dbus.Variant
-	err := c.callWithReturn(&settings, ConnectionGetSettings)
 
-	if err != nil {
+	if err := c.callWithReturn(&settings, ConnectionGetSettings); err != nil {
 		return nil, err
 	}
 
-	rv := make(ConnectionSettings)
-
-	for k1, v1 := range settings {
-		rv[k1] = make(map[string]interface{})
-
-		for k2, v2 := range v1 {
-			rv[k1][k2] = v2.Value()
-		}
-	}
-
-	return rv, nil
+	return variantMapToSettings(settings), nil
 }
 
 func (c *connection) GetSecrets(settingName string) (ConnectionSettings, error) {
 	var settings map[string]map[string]dbus.Variant
-	err := c.callWithReturn(&settings, ConnectionGetSecrets, settingName)
 
-	if err != nil {
+	if err := c.callWithReturn(&settings, ConnectionGetSecrets, settingName); err != nil {
 		return nil, err
 	}
 
-	rv := make(ConnectionSettings)
+	return variantMapToSettings(settings), nil
+}
 
-	for k1, v1 := range settings {
-		rv[k1] = make(map[string]interface{})
+func variantMapToSettings(variantMap map[string]map[string]dbus.Variant) (settings ConnectionSettings) {
+	settings = make(ConnectionSettings)
+	for k1, v1 := range variantMap {
+		settings[k1] = make(map[string]interface{})
 
 		for k2, v2 := range v1 {
-			rv[k1][k2] = v2.Value()
+			v2Value := v2.Value()
+			if variant, isVariant := v2Value.([]map[string]dbus.Variant); isVariant {
+				var v2Values []map[string]interface{}
+
+				for _, arrayItem := range variant {
+					arrayValues := make(map[string]interface{})
+					for k3, v3 := range arrayItem {
+						arrayValues[k3] = v3.Value()
+					}
+					v2Values = append(v2Values, arrayValues)
+				}
+
+				settings[k1][k2] = v2Values
+			} else {
+				settings[k1][k2] = v2Value
+			}
 		}
 	}
 
-	return rv, nil
+	return
 }
 
 func (c *connection) ClearSecrets() error {
