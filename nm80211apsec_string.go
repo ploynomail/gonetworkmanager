@@ -19,45 +19,33 @@ func _() {
 	_ = x[Nm80211APSecGroupCCMP-128]
 	_ = x[Nm80211APSecKeyMgmtPSK-256]
 	_ = x[Nm80211APSecKeyMgmt8021X-512]
+	_ = x[Nm80211APSecKeyMgmtSAE-1024]
+	_ = x[Nm80211APSecKeyMgmtOWE-2048]
+	_ = x[Nm80211APSecKeyMgmtOWETM-4096]
 }
 
-const (
-	_Nm80211APSec_name_0 = "Nm80211APSecNoneNm80211APSecPairWEP40Nm80211APSecPairWEP104"
-	_Nm80211APSec_name_1 = "Nm80211APSecPairTKIP"
-	_Nm80211APSec_name_2 = "Nm80211APSecPairCCMP"
-	_Nm80211APSec_name_3 = "Nm80211APSecGroupWEP40"
-	_Nm80211APSec_name_4 = "Nm80211APSecGroupWEP104"
-	_Nm80211APSec_name_5 = "Nm80211APSecGroupTKIP"
-	_Nm80211APSec_name_6 = "Nm80211APSecGroupCCMP"
-	_Nm80211APSec_name_7 = "Nm80211APSecKeyMgmtPSK"
-	_Nm80211APSec_name_8 = "Nm80211APSecKeyMgmt8021X"
-)
+const _Nm80211APSec_name = "Nm80211APSecNoneNm80211APSecPairWEP40Nm80211APSecPairWEP104Nm80211APSecPairTKIPNm80211APSecPairCCMPNm80211APSecGroupWEP40Nm80211APSecGroupWEP104Nm80211APSecGroupTKIPNm80211APSecGroupCCMPNm80211APSecKeyMgmtPSKNm80211APSecKeyMgmt8021XNm80211APSecKeyMgmtSAENm80211APSecKeyMgmtOWENm80211APSecKeyMgmtOWETM"
 
-var (
-	_Nm80211APSec_index_0 = [...]uint8{0, 16, 37, 59}
-)
+var _Nm80211APSec_map = map[Nm80211APSec]string{
+	0:    _Nm80211APSec_name[0:16],
+	1:    _Nm80211APSec_name[16:37],
+	2:    _Nm80211APSec_name[37:59],
+	4:    _Nm80211APSec_name[59:79],
+	8:    _Nm80211APSec_name[79:99],
+	16:   _Nm80211APSec_name[99:121],
+	32:   _Nm80211APSec_name[121:144],
+	64:   _Nm80211APSec_name[144:165],
+	128:  _Nm80211APSec_name[165:186],
+	256:  _Nm80211APSec_name[186:208],
+	512:  _Nm80211APSec_name[208:232],
+	1024: _Nm80211APSec_name[232:254],
+	2048: _Nm80211APSec_name[254:276],
+	4096: _Nm80211APSec_name[276:300],
+}
 
 func (i Nm80211APSec) String() string {
-	switch {
-	case 0 <= i && i <= 2:
-		return _Nm80211APSec_name_0[_Nm80211APSec_index_0[i]:_Nm80211APSec_index_0[i+1]]
-	case i == 4:
-		return _Nm80211APSec_name_1
-	case i == 8:
-		return _Nm80211APSec_name_2
-	case i == 16:
-		return _Nm80211APSec_name_3
-	case i == 32:
-		return _Nm80211APSec_name_4
-	case i == 64:
-		return _Nm80211APSec_name_5
-	case i == 128:
-		return _Nm80211APSec_name_6
-	case i == 256:
-		return _Nm80211APSec_name_7
-	case i == 512:
-		return _Nm80211APSec_name_8
-	default:
-		return "Nm80211APSec(" + strconv.FormatInt(int64(i), 10) + ")"
+	if str, ok := _Nm80211APSec_map[i]; ok {
+		return str
 	}
+	return "Nm80211APSec(" + strconv.FormatInt(int64(i), 10) + ")"
 }
