@@ -25,9 +25,9 @@ type DnsConfigurationData struct {
 
 type DnsManager interface {
 	GetPath() dbus.ObjectPath
-	GetPropertyConfiguration() ([]DnsConfigurationData, error)
-	GetPropertyRcManager() (string, error)
 	GetPropertyMode() (string, error)
+	GetPropertyRcManager() (string, error)
+	GetPropertyConfiguration() ([]DnsConfigurationData, error)
 }
 
 type dnsManager struct {
@@ -43,15 +43,19 @@ func (d *dnsManager) GetPath() dbus.ObjectPath {
 	return d.obj.Path()
 }
 
+func (d *dnsManager) GetPropertyMode() (string, error) {
+	return d.getStringProperty(DnsManagerPropertyMode)
+}
+
+func (d *dnsManager) GetPropertyRcManager() (string, error) {
+	return d.getStringProperty(DnsManagerPropertyRcManager)
+}
+
 func (d *dnsManager) GetPropertyConfiguration() ([]DnsConfigurationData, error) {
 	configurations, err := d.getSliceMapStringVariantProperty(DnsManagerPropertyConfiguration)
 	if err != nil {
 		return nil, err
 	}
-
-	// for k, c := range configurations {
-	// 	fmt.Println(k, c)
-	// }
 
 	ret := make([]DnsConfigurationData, len(configurations))
 	for i, conf := range configurations {
@@ -89,12 +93,4 @@ func (d *dnsManager) GetPropertyConfiguration() ([]DnsConfigurationData, error) 
 	}
 
 	return ret, nil
-}
-
-func (d *dnsManager) GetPropertyRcManager() (string, error) {
-	return d.getStringProperty(DnsManagerPropertyRcManager)
-}
-
-func (d *dnsManager) GetPropertyMode() (string, error) {
-	return d.getStringProperty(DnsManagerPropertyMode)
 }
