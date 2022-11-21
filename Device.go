@@ -150,6 +150,9 @@ type Device interface {
 	// GetPropertyReal True if the device exists, or False for placeholder devices that do not yet exist but could be automatically created by NetworkManager if one of their AvailableConnections was activated.
 	GetPropertyReal() (bool, error)
 
+	// The result of the last IPv4 connectivity check.
+	GetPropertyIp4Connectivity() (NmConnectivity, error)
+
 	MarshalJSON() ([]byte, error)
 }
 
@@ -307,6 +310,11 @@ func (d *device) GetPropertyMtu() (uint32, error) {
 
 func (d *device) GetPropertyReal() (bool, error) {
 	return d.getBoolProperty(DevicePropertyReal)
+}
+
+func (d *device) GetPropertyIp4Connectivity() (NmConnectivity, error) {
+	u, err := d.getUint32Property(DevicePropertyIp4Connectivity)
+	return NmConnectivity(u), err
 }
 
 func (d *device) marshalMap() (map[string]interface{}, error) {
