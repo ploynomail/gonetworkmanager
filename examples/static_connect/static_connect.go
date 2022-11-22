@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Wifx/gonetworkmanager"
+	"github.com/Wifx/gonetworkmanager/v2"
 	"github.com/google/uuid"
 )
 
