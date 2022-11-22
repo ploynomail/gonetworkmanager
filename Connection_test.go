@@ -63,15 +63,15 @@ func TestDecodeSettings(t *testing.T) {
 
 	expected := ConnectionSettings{
 		"ipv4": {
-			"address-data": []interface{}{
-				map[string]interface{}{
+			"address-data": []map[string]interface{}{
+				{
 					"address": "192.168.1.156",
 					"prefix":  24,
 				},
 			},
 			"dns-search": []string{},
 			"method":     "manual",
-			"route-data": []interface{}(nil),
+			"route-data": []map[string]interface{}(nil),
 			"routes":     [][]uint32{},
 			"addresses": [][]uint32{
 				{
@@ -86,11 +86,11 @@ func TestDecodeSettings(t *testing.T) {
 		},
 		"ipv6": {
 			"addr-gen-mode": 3,
-			"address-data":  []interface{}(nil),
+			"address-data":  []map[string]interface{}(nil),
 			"routes":        [][]interface{}{},
 			"dns-search":    []string{},
 			"method":        "auto",
-			"route-data":    []interface{}(nil),
+			"route-data":    []map[string]interface{}(nil),
 			"dhcp-timeout":  45,
 			"route-metric":  100,
 			"addresses":     [][]interface{}{},
@@ -145,15 +145,15 @@ func TestDecode(t *testing.T) {
 	result := decode(ipSettings)
 
 	expected := map[string]interface{}{
-		"address-data": []interface{}{
-			map[string]interface{}{
+		"address-data": []map[string]interface{}{
+			{
 				"address": "192.168.1.156",
 				"prefix":  24,
 			},
 		},
 		"dns-search": []string{},
 		"method":     "manual",
-		"route-data": []interface{}(nil),
+		"route-data": []map[string]interface{}(nil),
 		"routes":     [][]uint32{},
 		"addresses": [][]uint32{
 			{

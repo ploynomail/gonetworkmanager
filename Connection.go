@@ -125,30 +125,37 @@ func decodeSettings(input map[string]map[string]dbus.Variant) (settings Connecti
 func decode(input interface{}) (value interface{}) {
 	if variant, isVariant := input.(dbus.Variant); isVariant {
 		return decode(variant.Value())
+	} else if inputMap, isMap := input.(map[string]dbus.Variant); isMap {
+		return decodeMap(inputMap)
+	} else if inputArray, isArray := input.([]dbus.Variant); isArray {
+		return decodeArray(inputArray)
+	} else if inputArray, isArray := input.([]map[string]dbus.Variant); isArray {
+		return decodeMapArray(inputArray)
 	} else {
-
-		if inputMap, isMap := input.(map[string]dbus.Variant); isMap {
-			valueMap := map[string]interface{}{}
-			for key, data := range inputMap {
-				valueMap[key] = decode(data)
-			}
-			return valueMap
-		} else if inputArray, isArray := input.([]interface{}); isArray {
-			var valueArray []interface{}
-			for _, data := range inputArray {
-				valueArray = append(valueArray, decode(data))
-			}
-			return valueArray
-		} else if inputArray, isArray := input.([]map[string]dbus.Variant); isArray {
-			var valueArray []interface{}
-			for _, data := range inputArray {
-				valueArray = append(valueArray, decode(data))
-			}
-			return valueArray
-		} else {
-			return input
-		}
+		return input
 	}
+}
+
+func decodeArray(input []dbus.Variant) (value []interface{}) {
+	for _, data := range input {
+		value = append(value, decode(data))
+	}
+	return
+}
+
+func decodeMapArray(input []map[string]dbus.Variant) (value []map[string]interface{}) {
+	for _, data := range input {
+		value = append(value, decodeMap(data))
+	}
+	return
+}
+
+func decodeMap(input map[string]dbus.Variant) (value map[string]interface{}) {
+	value = map[string]interface{}{}
+	for key, data := range input {
+		value[key] = decode(data)
+	}
+	return
 }
 
 func (c *connection) ClearSecrets() error {
