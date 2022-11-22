@@ -101,7 +101,7 @@ func (c *connection) GetSettings() (ConnectionSettings, error) {
 		return nil, err
 	}
 
-	return variantMapToSettings(settings), nil
+	return decodeSettings(settings), nil
 }
 
 func (c *connection) GetSecrets(settingName string) (ConnectionSettings, error) {
@@ -111,35 +111,44 @@ func (c *connection) GetSecrets(settingName string) (ConnectionSettings, error) 
 		return nil, err
 	}
 
-	return variantMapToSettings(settings), nil
+	return decodeSettings(settings), nil
 }
 
-func variantMapToSettings(variantMap map[string]map[string]dbus.Variant) (settings ConnectionSettings) {
-	settings = make(ConnectionSettings)
-	for k1, v1 := range variantMap {
-		settings[k1] = make(map[string]interface{})
+func decodeSettings(input map[string]map[string]dbus.Variant) (settings ConnectionSettings) {
+	valueMap := ConnectionSettings{}
+	for key, data := range input {
+		valueMap[key] = decode(data).(map[string]interface{})
+	}
+	return valueMap
+}
 
-		for k2, v2 := range v1 {
-			v2Value := v2.Value()
-			if variant, isVariant := v2Value.([]map[string]dbus.Variant); isVariant {
-				var v2Values []map[string]interface{}
+func decode(input interface{}) (value interface{}) {
+	if variant, isVariant := input.(dbus.Variant); isVariant {
+		return decode(variant.Value())
+	} else {
 
-				for _, arrayItem := range variant {
-					arrayValues := make(map[string]interface{})
-					for k3, v3 := range arrayItem {
-						arrayValues[k3] = v3.Value()
-					}
-					v2Values = append(v2Values, arrayValues)
-				}
-
-				settings[k1][k2] = v2Values
-			} else {
-				settings[k1][k2] = v2Value
+		if inputMap, isMap := input.(map[string]dbus.Variant); isMap {
+			valueMap := map[string]interface{}{}
+			for key, data := range inputMap {
+				valueMap[key] = decode(data)
 			}
+			return valueMap
+		} else if inputArray, isArray := input.([]interface{}); isArray {
+			var valueArray []interface{}
+			for _, data := range inputArray {
+				valueArray = append(valueArray, decode(data))
+			}
+			return valueArray
+		} else if inputArray, isArray := input.([]map[string]dbus.Variant); isArray {
+			var valueArray []interface{}
+			for _, data := range inputArray {
+				valueArray = append(valueArray, decode(data))
+			}
+			return valueArray
+		} else {
+			return input
 		}
 	}
-
-	return
 }
 
 func (c *connection) ClearSecrets() error {
