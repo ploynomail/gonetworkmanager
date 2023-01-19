@@ -128,6 +128,7 @@ type Device interface {
 
 	// GetPropertyAutoConnect If TRUE, indicates the device is allowed to autoconnect. If FALSE, manual intervention is required before the device will automatically connect to a known network, such as activating a connection using the device, or setting this property to TRUE. This property cannot be set to TRUE for default-unmanaged devices, since they never autoconnect.
 	GetPropertyAutoConnect() (bool, error)
+	SetPropertyAutoConnect(bool) error
 
 	// GetPropertyFirmwareMissing If TRUE, indicates the device is likely missing firmware necessary for its operation.
 	GetPropertyFirmwareMissing() (bool, error)
@@ -268,6 +269,10 @@ func (d *device) SetPropertyManaged(managed bool) error {
 
 func (d *device) GetPropertyAutoConnect() (bool, error) {
 	return d.getBoolProperty(DevicePropertyAutoconnect)
+}
+
+func (d *device) SetPropertyAutoConnect(managed bool) error {
+	return d.setProperty(DevicePropertyAutoconnect, managed)
 }
 
 func (d *device) GetPropertyFirmwareMissing() (bool, error) {
