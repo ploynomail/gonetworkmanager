@@ -30,7 +30,7 @@ type deviceBridge struct {
 }
 
 func (d *deviceBridge) GetPropertyHwAddress() (string, error) {
-	return d.getStringProperty(DeviceDummyPropertyHwAddress)
+	return d.getStringProperty(DeviceBridgePropertyHwAddress)
 }
 
 func (d *deviceBridge) MarshalJSON() ([]byte, error) {
