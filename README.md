@@ -1,5 +1,5 @@
-[![GoDoc](https://godoc.org/github.com/Wifx/gonetworkmanager?status.svg)](https://pkg.go.dev/github.com/Wifx/gonetworkmanager)
-[![Go build](https://github.com/Wifx/gonetworkmanager/workflows/Go/badge.svg)](https://github.com/Wifx/gonetworkmanager/actions?query=workflow%3AGo)
+[![GoDoc](https://godoc.org/github.com/ploynomail/gonetworkmanager?status.svg)](https://pkg.go.dev/github.com/ploynomail/gonetworkmanager)
+[![Go build](https://github.com/ploynomail/gonetworkmanager/workflows/Go/badge.svg)](https://github.com/ploynomail/gonetworkmanager/actions?query=workflow%3AGo)
 
 gonetworkmanager
 ================
