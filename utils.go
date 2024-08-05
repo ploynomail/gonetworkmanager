@@ -280,3 +280,26 @@ func ip4ToString(ip uint32) string {
 	binary.LittleEndian.PutUint32(bs, ip)
 	return net.IP(bs).String()
 }
+
+func IpToInt(ip string) (uint32, error) {
+	if ip == "" {
+		return 0, nil
+	}
+	ipAddr := net.ParseIP(ip)
+	if ipAddr == nil {
+		return 0, fmt.Errorf("invalid IP address")
+	}
+
+	ip4 := ipAddr.To4()
+	if ip4 == nil {
+		return 0, fmt.Errorf("not a valid IPv4 address")
+	}
+
+	var ipInt uint32
+	for i := len(ip4) - 1; i >= 0; i-- { // 从最后一个字节开始累加
+		octet := int64(ip4[i])
+		ipInt = ipInt*256 + uint32(octet)
+	}
+
+	return ipInt, nil
+}
