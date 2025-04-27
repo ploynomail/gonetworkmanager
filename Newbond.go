@@ -1,6 +1,8 @@
 package gonetworkmanager
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type BondMasterConfig struct {
 	InterfaceName  string
@@ -30,11 +32,17 @@ func CreateBondMaster(config *BondMasterConfig) error {
 
 	ethernetType := "bond"
 	ethernetSection := "bond"
-	bondSectionMode := "mode"
+	bondSectionMode := "options"
 
 	connection := make(map[string]map[string]interface{})
 	connection[ethernetSection] = make(map[string]interface{})
-	connection[ethernetSection][bondSectionMode] = config.Mode
+	connection[ethernetSection][bondSectionMode] = make(map[string]string, 0)
+	bondOptions, ok := connection[ethernetSection][bondSectionMode].(map[string]string)
+	if !ok {
+		bondOptions = make(map[string]string)
+		connection[ethernetSection][bondSectionMode] = bondOptions
+	}
+	bondOptions["mode"] = config.Mode
 	connection[connectionSection] = make(map[string]interface{})
 	connection[connectionSection][connectionSectionID] = config.InterfaceName
 	connection[connectionSection][connectionSectionType] = ethernetType

@@ -6,7 +6,7 @@ import (
 	"github.com/ploynomail/gonetworkmanager/v2"
 )
 
-func DeleteBridge(name string) {
+func DeleteBond(name string) {
 	// Get the connection by name
 	conn, err := gonetworkmanager.GetConnectionByName(name)
 	if err != nil {
@@ -23,6 +23,7 @@ func DeleteBridge(name string) {
 }
 
 func main() {
+	DeleteBond("bond0")
 	config := &gonetworkmanager.BondMasterConfig{
 		InterfaceName:  "bond0",
 		IPAddress:      "172.22.0.22",
@@ -31,6 +32,7 @@ func main() {
 		IP4Method:      "manual",
 		IP6Method:      "ignore",
 		AutoConn:       true,
+		Mode:           "active-backup",
 	}
 	if err := gonetworkmanager.CreateBondMaster(config); err != nil {
 		panic(err)
