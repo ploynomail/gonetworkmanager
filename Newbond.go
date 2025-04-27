@@ -10,7 +10,7 @@ type BondMasterConfig struct {
 	IP4Method      string
 	IP6Method      string
 	AutoConn       bool
-	mode           string
+	Mode           string
 }
 
 func CreateBondMaster(config *BondMasterConfig) error {
@@ -34,7 +34,7 @@ func CreateBondMaster(config *BondMasterConfig) error {
 
 	connection := make(map[string]map[string]interface{})
 	connection[ethernetSection] = make(map[string]interface{})
-	connection[ethernetSection][bondSectionMode] = config.mode
+	connection[ethernetSection][bondSectionMode] = config.Mode
 	connection[connectionSection] = make(map[string]interface{})
 	connection[connectionSection][connectionSectionID] = config.InterfaceName
 	connection[connectionSection][connectionSectionType] = ethernetType
